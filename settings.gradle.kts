@@ -5,8 +5,6 @@ pluginManagement {
     }
 }
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
-}
+include(":module:calculator-boundary")
 
 rootProject.name = "rpc-client"

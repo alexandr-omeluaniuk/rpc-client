@@ -8,4 +8,8 @@ class CalculatorServiceImpl() : CalculatorService {
     override fun sum(a: Int, b: Int): Int {
         return a + b
     }
+
+    override fun multiplication(a: Int, b: Int): Int {
+        return a * b
+    }
 }

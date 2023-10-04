@@ -5,9 +5,9 @@ pluginManagement {
     }
 }
 
-include(":module:calculator-boundary")
-include(":module:calculator-microservice")
-include(":module:gateway-microservice")
-include(":module:discovery-microservice")
+include(":module:libs:calculator-boundary")
+include(":module:microservice:calculator-microservice")
+include(":module:microservice:gateway-microservice")
+include(":module:microservice:discovery-microservice")
 
 rootProject.name = "rpc-client"

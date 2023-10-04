@@ -9,10 +9,12 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/module" />
-            <option value="$PROJECT_DIR$/module/calculator-boundary" />
-            <option value="$PROJECT_DIR$/module/calculator-microservice" />
-            <option value="$PROJECT_DIR$/module/discovery-microservice" />
-            <option value="$PROJECT_DIR$/module/gateway-microservice" />
+            <option value="$PROJECT_DIR$/module/libs" />
+            <option value="$PROJECT_DIR$/module/libs/calculator-boundary" />
+            <option value="$PROJECT_DIR$/module/microservice" />
+            <option value="$PROJECT_DIR$/module/microservice/calculator-microservice" />
+            <option value="$PROJECT_DIR$/module/microservice/discovery-microservice" />
+            <option value="$PROJECT_DIR$/module/microservice/gateway-microservice" />
           </set>
         </option>
       </GradleProjectSettings>

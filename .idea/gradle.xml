@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/module" />
             <option value="$PROJECT_DIR$/module/calculator-boundary" />
             <option value="$PROJECT_DIR$/module/calculator-microservice" />
+            <option value="$PROJECT_DIR$/module/discovery-microservice" />
             <option value="$PROJECT_DIR$/module/gateway-microservice" />
           </set>
         </option>

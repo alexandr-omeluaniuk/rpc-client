@@ -10,7 +10,7 @@ data class RpcCallSignature(
     override fun toString(): String {
         val parameters = method.parameters.map {
             it.type
-        }.joinToString(", ")
-        return String.format("%s:%s(%s):%s", rpcService.name, method.name, parameters, method.returnType.name)
+        }.joinToString(",")
+        return String.format("%s::%s(%s):%s", rpcService.name, method.name, parameters, method.returnType.name)
     }
 }

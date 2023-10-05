@@ -1,0 +1,4 @@
+spring:
+  application.name: calculator.microservice
+server:
+  port: 7000

@@ -1,4 +1,4 @@
-package ss.discovery.core
+package ss.rpc.discovery
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.ContextRefreshedEvent

@@ -1,4 +1,4 @@
-package ss.discovery.core
+package ss.rpc.discovery.core
 
 data class RpcRoute(
     val rpcCallName: String,

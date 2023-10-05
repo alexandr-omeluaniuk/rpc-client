@@ -1,7 +1,7 @@
 package ss.rpc.discovery.service
 
 import org.springframework.stereotype.Service
-import ss.discovery.core.RpcRoute
+import ss.rpc.discovery.core.RpcRoute
 
 @Service
 class DiscoveryService {

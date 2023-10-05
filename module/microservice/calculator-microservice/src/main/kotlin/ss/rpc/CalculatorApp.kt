@@ -1,11 +1,11 @@
-package ss.rpc.gateway
+package ss.rpc
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class GatewayApp
+class CalculatorApp
 
 fun main(args: Array<String>) {
-    runApplication<GatewayApp>(*args)
+    runApplication<CalculatorApp>(*args)
 }

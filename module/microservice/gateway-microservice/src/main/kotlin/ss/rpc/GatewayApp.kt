@@ -1,13 +1,11 @@
-package ss.rpc.calculator
+package ss.rpc
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.context.annotation.ComponentScan
 
 @SpringBootApplication
-@ComponentScan("ss")
-class CalculatorApp
+class GatewayApp
 
 fun main(args: Array<String>) {
-    runApplication<CalculatorApp>(*args)
+    runApplication<GatewayApp>(*args)
 }

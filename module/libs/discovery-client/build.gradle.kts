@@ -9,4 +9,5 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot:3.1.4")
+    implementation(project(":module:libs:discovery-core"))
 }

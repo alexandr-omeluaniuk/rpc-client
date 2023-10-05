@@ -23,7 +23,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation(project(":module:libs:calculator-boundary"))
-    implementation(project(":module:libs:discovery-core"))
+    implementation(project(":module:libs:discovery-client"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

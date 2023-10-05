@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/module/libs/calculator-boundary" />
             <option value="$PROJECT_DIR$/module/libs/discovery-client" />
             <option value="$PROJECT_DIR$/module/libs/discovery-core" />
+            <option value="$PROJECT_DIR$/module/libs/rpc-core" />
             <option value="$PROJECT_DIR$/module/microservice" />
             <option value="$PROJECT_DIR$/module/microservice/calculator-microservice" />
             <option value="$PROJECT_DIR$/module/microservice/discovery-microservice" />

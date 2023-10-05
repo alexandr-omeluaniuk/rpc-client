@@ -8,5 +8,4 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":module:libs:rpc-core"))
 }

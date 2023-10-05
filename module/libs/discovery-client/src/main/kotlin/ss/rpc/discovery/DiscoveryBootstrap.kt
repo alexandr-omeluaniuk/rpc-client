@@ -16,6 +16,9 @@ open class DiscoveryBootstrap(
     fun onAppStartup() {
         val rpcServices = findRpcServices()
         val rpcCallSignatures = prepareRpcCallSignatures(rpcServices)
+        rpcCallSignatures.forEach {
+            println(it.toString())
+        }
     }
 
     private fun findRpcServices(): Map<Class<*>, Any> {
@@ -32,11 +35,10 @@ open class DiscoveryBootstrap(
         return rpcServices
     }
 
-    private fun prepareRpcCallSignatures(rpcServices: Map<Class<*>, Any>): List<RpcCallSignature> {
-        return rpcServices.keys.map { rpcService ->
-            rpcService.javaClass.methods.map {
+    private fun prepareRpcCallSignatures(rpcServices: Map<Class<*>, Any>): List<RpcCallSignature> =
+        rpcServices.keys.map { rpcService ->
+            rpcService.declaredMethods.map {
                 RpcCallSignature(rpcService, it)
             }
         }.flatten()
-    }
 }

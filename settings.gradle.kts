@@ -7,6 +7,7 @@ pluginManagement {
 
 include(":module:libs:calculator-boundary")
 include(":module:libs:discovery-core")
+include(":module:libs:discovery-client")
 include(":module:microservice:calculator-microservice")
 include(":module:microservice:gateway-microservice")
 include(":module:microservice:discovery-microservice")

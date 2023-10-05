@@ -2,10 +2,10 @@ package ss.rpc.calculator
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import ss.discovery.core.EnableDiscoveryClient
+import org.springframework.context.annotation.ComponentScan
 
 @SpringBootApplication
-@EnableDiscoveryClient
+@ComponentScan("ss")
 class CalculatorApp
 
 fun main(args: Array<String>) {

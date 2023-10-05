@@ -8,4 +8,5 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot:3.1.4")
 }

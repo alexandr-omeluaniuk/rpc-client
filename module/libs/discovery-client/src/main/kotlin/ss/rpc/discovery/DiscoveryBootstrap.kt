@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.EventListener
+import ss.rpc.core.RpcCallSignature
 import ss.rpc.core.RpcService
 
 @Configuration
@@ -14,19 +15,28 @@ open class DiscoveryBootstrap(
     @EventListener(ContextRefreshedEvent::class)
     fun onAppStartup() {
         val rpcServices = findRpcServices()
+        val rpcCallSignatures = prepareRpcCallSignatures(rpcServices)
     }
 
-    private fun findRpcServices(): Map<Class<Any>, Any> {
-        val rpcServices = HashMap<Class<Any>, Any>()
+    private fun findRpcServices(): Map<Class<*>, Any> {
+        val rpcServices = HashMap<Class<*>, Any>()
         applicationContext.beanDefinitionNames.forEach { beanName ->
             val bean = applicationContext.getBean(beanName)
             val beanClass = bean.javaClass
             beanClass.interfaces.forEach { beanContract ->
                 if (beanContract.getAnnotation(RpcService::class.java) != null) {
-                    rpcServices[beanClass] = bean
+                    rpcServices[beanContract] = bean
                 }
             }
         }
         return rpcServices
+    }
+
+    private fun prepareRpcCallSignatures(rpcServices: Map<Class<*>, Any>): List<RpcCallSignature> {
+        return rpcServices.keys.map { rpcService ->
+            rpcService.javaClass.methods.map {
+                RpcCallSignature(rpcService, it)
+            }
+        }.flatten()
     }
 }

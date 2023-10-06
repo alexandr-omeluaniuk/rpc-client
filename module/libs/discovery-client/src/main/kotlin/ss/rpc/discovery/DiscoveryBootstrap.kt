@@ -6,19 +6,30 @@ import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.EventListener
 import ss.rpc.core.RpcCallSignature
 import ss.rpc.core.RpcService
+import ss.rpc.discovery.core.DISCOVERY_SERVER_HOST
+import ss.rpc.discovery.core.DISCOVERY_SERVER_PORT
+import ss.rpc.discovery.core.DISCOVERY_SERVER_SCHEMA
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse.BodyHandlers
+import java.time.Duration
 
 @Configuration
 open class DiscoveryBootstrap(
     private val applicationContext: ApplicationContext
 ) {
 
+    private val httpClient = HttpClient.newBuilder()
+        .version(HttpClient.Version.HTTP_2)
+        .connectTimeout(Duration.ofSeconds(10))
+        .build();
+
     @EventListener(ContextRefreshedEvent::class)
     fun onAppStartup() {
         val rpcServices = findRpcServices()
         val rpcCallSignatures = prepareRpcCallSignatures(rpcServices)
-        rpcCallSignatures.forEach {
-            println(it.toString())
-        }
+        discoverRpcCalls(rpcCallSignatures)
     }
 
     private fun findRpcServices(): Map<Class<*>, Any> {
@@ -41,4 +52,26 @@ open class DiscoveryBootstrap(
                 RpcCallSignature(rpcService, it)
             }
         }.flatten()
+
+    private fun discoverRpcCalls(rpcCallSignatures: List<RpcCallSignature>) {
+        val uri = URI(
+            String.format(
+                "%s://%s:%s/discovery",
+                DISCOVERY_SERVER_SCHEMA,
+                DISCOVERY_SERVER_HOST,
+                DISCOVERY_SERVER_PORT
+            )
+        )
+        val payload = "[" + rpcCallSignatures.joinToString(",") { """"$it"""" } + "]"
+        println(payload)
+        println(uri)
+        val statusCode = httpClient.send(
+            HttpRequest.newBuilder().uri(
+                uri
+            ).header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(payload)).build(),
+            BodyHandlers.ofString()
+        ).body()
+        println(statusCode)
+    }
 }

@@ -1,10 +1,7 @@
 package ss.rpc.discovery.rest
 
 import jakarta.servlet.http.HttpServletRequest
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ss.rpc.discovery.service.DiscoveryService
 
 @RestController
@@ -13,11 +10,16 @@ class DiscoveryController(
     private val discoveryService: DiscoveryService
 ) {
 
-    @PutMapping("/register/{name}")
-    fun registerMicroservice(
-        @PathVariable("name") rpcCallName: String,
+    @PutMapping
+    fun registerRpcCalls(
+        @RequestBody rpcCallSignatures: List<String>,
         request: HttpServletRequest
     ) {
-        discoveryService.registerRpcCall(rpcCallName, request.remoteHost, request.remotePort)
+        discoveryService.registerRpcCall(rpcCallSignatures, request.remoteHost, request.remotePort)
+    }
+
+    @GetMapping
+    fun healthCheck(): String {
+        return "OK"
     }
 }

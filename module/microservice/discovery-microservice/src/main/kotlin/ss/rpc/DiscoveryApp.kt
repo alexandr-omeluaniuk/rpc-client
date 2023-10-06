@@ -1,4 +1,4 @@
-package ss.rpc.gateway
+package ss.rpc
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

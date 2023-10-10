@@ -9,10 +9,10 @@ class DiscoveryService {
 
     private val routingTable = HashMap<String, RpcRoute>()
 
-    fun registerRpcCall(rpcRegistrationInfo: RpcRegistrationInfo, host: String) {
+    fun registerRpcCall(rpcRegistrationInfo: RpcRegistrationInfo, host: String): List<RpcRoute> {
         rpcRegistrationInfo.signatures.forEach {
             routingTable[it] = RpcRoute(it, host, rpcRegistrationInfo.port)
         }
-        println(routingTable)
+        return routingTable.values.toList()
     }
 }

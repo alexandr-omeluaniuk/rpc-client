@@ -1,6 +1,7 @@
 package ss.rpc.discovery
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Configuration
@@ -8,15 +9,15 @@ import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.EventListener
 import ss.rpc.core.RpcCallSignature
 import ss.rpc.core.RpcService
-import ss.rpc.discovery.core.DISCOVERY_SERVER_HOST
-import ss.rpc.discovery.core.DISCOVERY_SERVER_PORT
-import ss.rpc.discovery.core.DISCOVERY_SERVER_SCHEMA
-import ss.rpc.discovery.core.RpcRegistrationInfo
+import ss.rpc.discovery.core.*
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodyHandlers
 import java.time.Duration
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 @Configuration
 open class DiscoveryBootstrap(
@@ -30,11 +31,13 @@ open class DiscoveryBootstrap(
         .connectTimeout(Duration.ofSeconds(10))
         .build();
 
+    private val routingTable: MutableMap<String, RpcRoute> = ConcurrentHashMap()
+
     @EventListener(ContextRefreshedEvent::class)
     fun onAppStartup() {
         val rpcServices = findRpcServices()
         val rpcCallSignatures = prepareRpcCallSignatures(rpcServices)
-        discoverRpcCalls(rpcCallSignatures)
+        discoverRpcCallsPeriodically(rpcCallSignatures)
     }
 
     private fun findRpcServices(): Map<Class<*>, Any> {
@@ -58,6 +61,15 @@ open class DiscoveryBootstrap(
             }
         }.flatten()
 
+    private fun discoverRpcCallsPeriodically(rpcCallSignatures: List<RpcCallSignature>) {
+        thread(start = true) {
+            while (true) {
+                discoverRpcCalls(rpcCallSignatures)
+                Thread.sleep(TimeUnit.SECONDS.toMillis(30))
+            }
+        }
+    }
+
     private fun discoverRpcCalls(rpcCallSignatures: List<RpcCallSignature>) {
         val uri = URI(
             String.format(
@@ -71,15 +83,18 @@ open class DiscoveryBootstrap(
             port = port,
             signatures = rpcCallSignatures.map { it.toString() }
         )
-        val payloadString = ObjectMapper().writeValueAsString(payload)
-        println(payloadString)
-        val statusCode = httpClient.send(
+        val objectMapper = ObjectMapper()
+        val payloadString = objectMapper.writeValueAsString(payload)
+        val routingTableString = httpClient.send(
             HttpRequest.newBuilder().uri(
                 uri
             ).header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(payloadString)).build(),
             BodyHandlers.ofString()
         ).body()
-        println(statusCode)
+        val listRoutes: List<RpcRoute> = objectMapper.readValue(routingTableString)
+        routingTable.clear()
+        routingTable.putAll(listRoutes.associateBy(RpcRoute::rpcCallName))
+        println(routingTable)
     }
 }

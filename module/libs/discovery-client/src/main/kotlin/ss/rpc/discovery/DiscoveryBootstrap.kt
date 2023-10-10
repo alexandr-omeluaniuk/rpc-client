@@ -23,7 +23,8 @@ import kotlin.concurrent.thread
 open class DiscoveryBootstrap(
     private val applicationContext: ApplicationContext,
     @Value("\${server.port}")
-    private val port: Int
+    private val port: Int,
+    private val objectMapper: ObjectMapper
 ) {
 
     private val httpClient = HttpClient.newBuilder()
@@ -83,7 +84,6 @@ open class DiscoveryBootstrap(
             port = port,
             signatures = rpcCallSignatures.map { it.toString() }
         )
-        val objectMapper = ObjectMapper()
         val payloadString = objectMapper.writeValueAsString(payload)
         val routingTableString = httpClient.send(
             HttpRequest.newBuilder().uri(
@@ -92,7 +92,7 @@ open class DiscoveryBootstrap(
                 .PUT(HttpRequest.BodyPublishers.ofString(payloadString)).build(),
             BodyHandlers.ofString()
         ).body()
-        val listRoutes: List<RpcRoute> = objectMapper.readValue(routingTableString)
+        val listRoutes: List<RpcRoute> = objectMapper.readValue<List<RpcRoute>>(routingTableString)
         routingTable.clear()
         routingTable.putAll(listRoutes.associateBy(RpcRoute::rpcCallName))
         println(routingTable)

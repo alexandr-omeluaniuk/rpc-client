@@ -1,5 +1,7 @@
 package ss.rpc.discovery
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.event.ContextRefreshedEvent
@@ -9,6 +11,7 @@ import ss.rpc.core.RpcService
 import ss.rpc.discovery.core.DISCOVERY_SERVER_HOST
 import ss.rpc.discovery.core.DISCOVERY_SERVER_PORT
 import ss.rpc.discovery.core.DISCOVERY_SERVER_SCHEMA
+import ss.rpc.discovery.core.RpcRegistrationInfo
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -17,7 +20,9 @@ import java.time.Duration
 
 @Configuration
 open class DiscoveryBootstrap(
-    private val applicationContext: ApplicationContext
+    private val applicationContext: ApplicationContext,
+    @Value("\${server.port}")
+    private val port: Int
 ) {
 
     private val httpClient = HttpClient.newBuilder()
@@ -62,14 +67,17 @@ open class DiscoveryBootstrap(
                 DISCOVERY_SERVER_PORT
             )
         )
-        val payload = "[" + rpcCallSignatures.joinToString(",") { """"$it"""" } + "]"
-        println(payload)
-        println(uri)
+        val payload = RpcRegistrationInfo(
+            port = port,
+            signatures = rpcCallSignatures.map { it.toString() }
+        )
+        val payloadString = ObjectMapper().writeValueAsString(payload)
+        println(payloadString)
         val statusCode = httpClient.send(
             HttpRequest.newBuilder().uri(
                 uri
             ).header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(payload)).build(),
+                .PUT(HttpRequest.BodyPublishers.ofString(payloadString)).build(),
             BodyHandlers.ofString()
         ).body()
         println(statusCode)

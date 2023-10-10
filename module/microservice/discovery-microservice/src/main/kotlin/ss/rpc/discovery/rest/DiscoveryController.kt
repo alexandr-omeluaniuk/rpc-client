@@ -1,7 +1,11 @@
 package ss.rpc.discovery.rest
 
 import jakarta.servlet.http.HttpServletRequest
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import ss.rpc.discovery.core.RpcRegistrationInfo
 import ss.rpc.discovery.service.DiscoveryService
 
 @RestController
@@ -12,14 +16,9 @@ class DiscoveryController(
 
     @PutMapping
     fun registerRpcCalls(
-        @RequestBody rpcCallSignatures: List<String>,
+        @RequestBody registrationInfo: RpcRegistrationInfo,
         request: HttpServletRequest
     ) {
-        discoveryService.registerRpcCall(rpcCallSignatures, request.remoteHost, request.remotePort)
-    }
-
-    @GetMapping
-    fun healthCheck(): String {
-        return "OK"
+        discoveryService.registerRpcCall(registrationInfo, request.remoteHost)
     }
 }

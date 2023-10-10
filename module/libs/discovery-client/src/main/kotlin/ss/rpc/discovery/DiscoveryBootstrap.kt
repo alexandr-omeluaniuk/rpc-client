@@ -95,6 +95,5 @@ open class DiscoveryBootstrap(
         val listRoutes: List<RpcRoute> = objectMapper.readValue<List<RpcRoute>>(routingTableString)
         routingTable.clear()
         routingTable.putAll(listRoutes.associateBy(RpcRoute::rpcCallName))
-        println(routingTable)
     }
 }

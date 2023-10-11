@@ -31,7 +31,7 @@ open class RpcDiscoveryBootstrap(
     private val httpClient = HttpClient.newBuilder()
         .version(HttpClient.Version.HTTP_2)
         .connectTimeout(Duration.ofSeconds(10))
-        .build();
+        .build()
 
     private val routingTable: MutableMap<String, RpcRoute> = ConcurrentHashMap()
 

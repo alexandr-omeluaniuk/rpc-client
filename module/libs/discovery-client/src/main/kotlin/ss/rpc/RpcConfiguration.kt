@@ -15,7 +15,7 @@ import java.lang.reflect.Proxy
 import java.util.*
 
 @Configuration
-class RpcConfiguration() : BeanDefinitionRegistryPostProcessor {
+open class RpcConfiguration() : BeanDefinitionRegistryPostProcessor {
 
     private val logger = LoggerFactory.getLogger(RpcConfiguration::class.java)
 
@@ -55,10 +55,11 @@ class RpcConfiguration() : BeanDefinitionRegistryPostProcessor {
     }
 
     private fun registerRpcClientAsBean(rpcClientInterface: Class<Any>, registry: BeanDefinitionRegistry) {
+        val rpcTransportLayer = ServiceLoader.load(RpcClientProxy::class.java).findFirst().get()
         val proxy = Proxy.newProxyInstance(
             rpcClientInterface.getClassLoader(),
             arrayOf(rpcClientInterface),
-            ServiceLoader.load(RpcClientProxy::class.java).findFirst().get()
+            rpcTransportLayer
         )
         val builder = BeanDefinitionBuilder.genericBeanDefinition(
             rpcClientInterface

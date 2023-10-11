@@ -7,6 +7,7 @@ pluginManagement {
 
 include(":module:boundary:calculator")
 include(":module:libs:rpc-core")
+include(":module:libs:rpc-transport-http")
 include(":module:libs:discovery-core")
 include(":module:libs:discovery-client")
 include(":module:microservice:calculator-microservice")

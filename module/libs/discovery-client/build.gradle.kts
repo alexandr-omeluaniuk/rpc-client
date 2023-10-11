@@ -10,7 +10,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot:3.1.4")
     implementation(project(":module:libs:discovery-core"))
-    implementation(project(":module:libs:rpc-core"))
+    implementation(project(":module:libs:rpc-transport-http"))
     implementation("com.fasterxml.jackson.core:jackson-core:2.15.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")

@@ -10,8 +10,9 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory
 import org.springframework.util.ClassUtils
 import ss.rpc.core.RpcService
-import ss.rpc.proxy.RpcClientProxy
+import ss.rpc.core.api.RpcClientProxy
 import java.lang.reflect.Proxy
+import java.util.*
 
 @Configuration
 class RpcConfiguration() : BeanDefinitionRegistryPostProcessor {
@@ -57,7 +58,7 @@ class RpcConfiguration() : BeanDefinitionRegistryPostProcessor {
         val proxy = Proxy.newProxyInstance(
             rpcClientInterface.getClassLoader(),
             arrayOf(rpcClientInterface),
-            RpcClientProxy()
+            ServiceLoader.load(RpcClientProxy::class.java).findFirst().get()
         )
         val builder = BeanDefinitionBuilder.genericBeanDefinition(
             rpcClientInterface

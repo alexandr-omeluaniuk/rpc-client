@@ -10,6 +10,7 @@ import org.springframework.context.event.EventListener
 import ss.rpc.core.RpcCallSignature
 import ss.rpc.core.RpcService
 import ss.rpc.discovery.core.*
+import java.net.ConnectException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -86,16 +87,19 @@ open class DiscoveryBootstrap(
             signatures = rpcCallSignatures.map { it.toString() }
         )
         val payloadString = objectMapper.writeValueAsString(payload)
-        val routingTableString = httpClient.send(
-            HttpRequest.newBuilder().uri(
-                uri
-            ).header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString(payloadString)).build(),
-            BodyHandlers.ofString()
-        ).body()
-        val listRoutes: List<RpcRoute> = objectMapper.readValue<List<RpcRoute>>(routingTableString)
-        routingTable.clear()
-        routingTable.putAll(listRoutes.associateBy(RpcRoute::rpcCallName))
-        println(routingTable)
+        try {
+            val routingTableString = httpClient.send(
+                HttpRequest.newBuilder().uri(
+                    uri
+                ).header("Content-Type", "application/json")
+                    .PUT(HttpRequest.BodyPublishers.ofString(payloadString)).build(),
+                BodyHandlers.ofString()
+            ).body()
+            val listRoutes: List<RpcRoute> = objectMapper.readValue<List<RpcRoute>>(routingTableString)
+            routingTable.clear()
+            routingTable.putAll(listRoutes.associateBy(RpcRoute::rpcCallName))
+        } catch (e: ConnectException) {
+
+        }
     }
 }

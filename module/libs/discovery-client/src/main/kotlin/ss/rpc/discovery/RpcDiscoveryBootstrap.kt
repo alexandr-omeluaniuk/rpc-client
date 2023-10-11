@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 @Configuration
-open class DiscoveryBootstrap(
+open class RpcDiscoveryBootstrap(
     private val applicationContext: ApplicationContext,
     @Value("\${server.port}")
     private val port: Int,
@@ -43,7 +43,6 @@ open class DiscoveryBootstrap(
     }
 
     private fun findRpcServices(): Map<Class<*>, Any> {
-        println("Looking for RPC calls")
         val rpcServices = HashMap<Class<*>, Any>()
         applicationContext.beanDefinitionNames.forEach { beanName ->
             val bean = applicationContext.getBean(beanName)

@@ -27,7 +27,7 @@ class RpcConfiguration() : BeanDefinitionRegistryPostProcessor {
         rpcClients.forEach { registerRpcClientAsBean(it, registry) }
     }
 
-    private fun scanForRpcClients(): Set<Class<*>> {
+    private fun scanForRpcClients(): Set<Class<Any>> {
         val classPackage = javaClass.packageName
         val packageSearchPath = "classpath*:${classPackage.replace(".", "/")}/**/*.class"
         val resources = PathMatchingResourcePatternResolver().getResources(packageSearchPath).filter {
@@ -36,7 +36,7 @@ class RpcConfiguration() : BeanDefinitionRegistryPostProcessor {
         logger.debug("[${resources.size}] Spring resources detected by search path [$packageSearchPath]")
         val metadataReaderFactory = CachingMetadataReaderFactory()
         val classes = resources.map {
-            Class.forName(metadataReaderFactory.getMetadataReader(it).classMetadata.className)
+            Class.forName(metadataReaderFactory.getMetadataReader(it).classMetadata.className) as Class<Any>
         }
         val rpcServices = classes.filter { cl ->
             cl.isInterface && cl.getAnnotation(RpcService::class.java) != null
@@ -53,16 +53,15 @@ class RpcConfiguration() : BeanDefinitionRegistryPostProcessor {
         }
     }
 
-    private fun registerRpcClientAsBean(rpcClientInterface: Class<*>, registry: BeanDefinitionRegistry) {
+    private fun registerRpcClientAsBean(rpcClientInterface: Class<Any>, registry: BeanDefinitionRegistry) {
+        val proxy = Proxy.newProxyInstance(
+            rpcClientInterface.getClassLoader(),
+            arrayOf(rpcClientInterface),
+            CalculatorServiceProxy()
+        )
         val builder = BeanDefinitionBuilder.genericBeanDefinition(
             rpcClientInterface
-        ) {
-            Proxy.newProxyInstance(
-                rpcClientInterface.getClassLoader(),
-                arrayOf(rpcClientInterface),
-                CalculatorServiceProxy()
-            )
-        }.setLazyInit(true)
+        ) { proxy }.setLazyInit(true)
         registry.registerBeanDefinition(
             rpcClientInterface.simpleName,
             builder.beanDefinition

@@ -1,9 +1,9 @@
-package ss.rpc.gateway.generated
+package ss.rpc.proxy
 
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 
-class CalculatorServiceProxy : InvocationHandler {
+class RpcClientProxy : InvocationHandler {
     override fun invoke(proxy: Any?, method: Method?, args: Array<out Any>?): Any {
         println(method)
         println(args)

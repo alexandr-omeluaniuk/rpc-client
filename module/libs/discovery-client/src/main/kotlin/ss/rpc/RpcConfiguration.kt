@@ -10,7 +10,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory
 import org.springframework.util.ClassUtils
 import ss.rpc.core.RpcService
-import ss.rpc.gateway.generated.CalculatorServiceProxy
+import ss.rpc.proxy.RpcClientProxy
 import java.lang.reflect.Proxy
 
 @Configuration
@@ -57,7 +57,7 @@ class RpcConfiguration() : BeanDefinitionRegistryPostProcessor {
         val proxy = Proxy.newProxyInstance(
             rpcClientInterface.getClassLoader(),
             arrayOf(rpcClientInterface),
-            CalculatorServiceProxy()
+            RpcClientProxy()
         )
         val builder = BeanDefinitionBuilder.genericBeanDefinition(
             rpcClientInterface

@@ -24,7 +24,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation(project(":module:libs:calculator-boundary"))
     implementation(project(":module:libs:discovery-client"))
-    implementation(project(":module:libs:rpc-core"))
 }
 
 tasks.withType<KotlinCompile> {

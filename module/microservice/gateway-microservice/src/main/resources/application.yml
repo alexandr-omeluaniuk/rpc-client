@@ -4,4 +4,4 @@ server:
   port: 8000
 logging:
   level:
-    ss.rpc: DEBUG
+    ss.rpc: INFO

@@ -5,7 +5,7 @@ pluginManagement {
     }
 }
 
-include(":module:libs:calculator-boundary")
+include(":module:boundary:calculator")
 include(":module:libs:rpc-core")
 include(":module:libs:discovery-core")
 include(":module:libs:discovery-client")

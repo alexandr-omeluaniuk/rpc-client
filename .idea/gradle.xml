@@ -9,8 +9,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/module" />
+            <option value="$PROJECT_DIR$/module/boundary" />
+            <option value="$PROJECT_DIR$/module/boundary/calculator" />
             <option value="$PROJECT_DIR$/module/libs" />
-            <option value="$PROJECT_DIR$/module/libs/calculator-boundary" />
             <option value="$PROJECT_DIR$/module/libs/discovery-client" />
             <option value="$PROJECT_DIR$/module/libs/discovery-core" />
             <option value="$PROJECT_DIR$/module/libs/rpc-core" />

@@ -1,4 +1,4 @@
-package ss.rpc.util
+package ss.rpc
 
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.Resource

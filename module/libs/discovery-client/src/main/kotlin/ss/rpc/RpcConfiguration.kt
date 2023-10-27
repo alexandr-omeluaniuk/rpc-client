@@ -6,7 +6,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor
 import org.springframework.context.annotation.Configuration
 import ss.rpc.core.api.RpcClientProxy
-import ss.rpc.util.RpcServicesScanner
 import java.lang.reflect.Proxy
 import java.util.*
 

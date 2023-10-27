@@ -10,4 +10,5 @@ repositories {
 dependencies {
     api(project(":module:libs:rpc-core"))
     compileOnly("org.slf4j:slf4j-api:2.0.9")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
 }

@@ -61,7 +61,7 @@ open class RpcDiscoveryBootstrap(
     private fun prepareRpcCallSignatures(rpcServices: Map<Class<*>, Any>): List<RpcCallSignature> =
         rpcServices.keys.map { rpcService ->
             rpcService.declaredMethods.map {
-                RpcCallSignature(rpcService, it)
+                RpcCallSignature(it)
             }
         }.flatten()
 

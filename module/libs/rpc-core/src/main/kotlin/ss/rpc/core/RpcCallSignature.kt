@@ -3,7 +3,6 @@ package ss.rpc.core
 import java.lang.reflect.Method
 
 data class RpcCallSignature(
-    val rpcService: Class<*>,
     val method: Method
 ) {
 
@@ -11,6 +10,6 @@ data class RpcCallSignature(
         val parameters = method.parameters.map {
             it.type
         }.joinToString(",")
-        return String.format("%s::%s(%s):%s", rpcService.name, method.name, parameters, method.returnType.name)
+        return String.format("%s::%s(%s):%s", method.declaringClass.name, method.name, parameters, method.returnType.name)
     }
 }

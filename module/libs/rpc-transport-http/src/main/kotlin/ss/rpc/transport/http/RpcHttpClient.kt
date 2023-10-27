@@ -15,7 +15,6 @@ class RpcHttpClient : RpcClientProxy {
         logger.debug("Arguments: ")
         args?.forEach { logger.debug(it.toString()) }
         val rpcSignature = RpcCallSignature(
-            rpcService = method!!.declaringClass,
             method = method!!
         ).toString()
         logger.debug("RPC signature [$rpcSignature]")

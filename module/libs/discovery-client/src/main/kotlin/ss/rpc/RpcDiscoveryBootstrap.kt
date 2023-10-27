@@ -39,18 +39,22 @@ open class RpcDiscoveryBootstrap(
 
     @EventListener(ContextRefreshedEvent::class)
     fun onAppStartup() {
-        val rpcServices = findRpcServices()
-        val rpcCallSignatures = prepareRpcCallSignatures(rpcServices)
+        val rpcImplementations = findRpcImplementations()
+        val rpcCallSignatures = prepareRpcCallSignatures(rpcImplementations)
         discoverRpcCallsPeriodically(rpcCallSignatures)
     }
 
-    private fun findRpcServices(): Map<Class<*>, Any> {
+    private fun findRpcImplementations(): Map<Class<*>, Any> {
         val rpcServices = HashMap<Class<*>, Any>()
+        val rpcImplementations = RpcServicesScanner.getInstance().getRpcImplementations()
         applicationContext.beanDefinitionNames.forEach { beanName ->
             val bean = applicationContext.getBean(beanName)
             val beanClass = bean.javaClass
             beanClass.interfaces.forEach { beanContract ->
-                if (beanContract.getAnnotation(RpcService::class.java) != null) {
+                if (
+                    beanContract.getAnnotation(RpcService::class.java) != null &&
+                    rpcImplementations.contains(beanContract)
+                ) {
                     rpcServices[beanContract] = bean
                 }
             }
@@ -58,8 +62,8 @@ open class RpcDiscoveryBootstrap(
         return rpcServices
     }
 
-    private fun prepareRpcCallSignatures(rpcServices: Map<Class<*>, Any>): List<RpcCallSignature> =
-        rpcServices.keys.map { rpcService ->
+    private fun prepareRpcCallSignatures(rpcImplementations: Map<Class<*>, Any>): List<RpcCallSignature> =
+        rpcImplementations.keys.map { rpcService ->
             rpcService.declaredMethods.map {
                 RpcCallSignature(it)
             }

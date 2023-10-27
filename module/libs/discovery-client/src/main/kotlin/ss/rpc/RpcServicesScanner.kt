@@ -11,7 +11,24 @@ class RpcServicesScanner {
 
     private val logger = LoggerFactory.getLogger(RpcServicesScanner::class.java)
 
-    fun findClients(): Set<Class<Any>> {
+    private val rpcClients: HashSet<Class<Any>> = HashSet()
+    private val rpcImplementations: HashSet<Class<Any>> = HashSet()
+
+    companion object {
+
+        @Volatile
+        private var instance: RpcServicesScanner? = null
+
+        fun getInstance() = instance ?: synchronized(this) {
+            instance ?: RpcServicesScanner().also { instance = it }.also { it.scan() }
+        }
+    }
+
+    fun getRpcClients(): Set<Class<Any>> = rpcClients
+
+    fun getRpcImplementations(): Set<Class<Any>> = rpcImplementations
+
+    private fun scan() {
         val resources = searchResources()
         val metadataReaderFactory = CachingMetadataReaderFactory()
         val classes = resources.map {
@@ -21,15 +38,9 @@ class RpcServicesScanner {
             cl.isInterface && cl.getAnnotation(RpcService::class.java) != null
         }
         logger.debug("Total RpcService interfaces detected [${rpcServices.size}]")
-        val implementedInterfaces = classes.mapNotNull {  cl ->
-            when (cl.isInterface) {
-                true -> null
-                false -> cl.interfaces.asList()
-            }
-        }.flatten()
-        return rpcServices.filter { !implementedInterfaces.contains(it) }.toSet().also {
-            it.forEach { logger.debug("RpcService client detected [$it]") }
-        }
+        val implementedInterfaces = findImplementedInterfaces(classes)
+        findRpcClients(rpcServices, implementedInterfaces)
+        findRpcImplementations(rpcServices, implementedInterfaces)
     }
 
     private fun searchResources(): List<Resource> {
@@ -40,5 +51,27 @@ class RpcServicesScanner {
         }.also {
             logger.debug("[${it.size}] Spring resources detected by search path [$packageSearchPath]")
         }
+    }
+
+    private fun findImplementedInterfaces(classes: List<Class<Any>>): List<Class<*>> =
+        classes.mapNotNull {  cl ->
+            when (cl.isInterface) {
+                true -> null
+                false -> cl.interfaces.asList()
+            }
+        }.flatten()
+
+    private fun findRpcClients(rpcServices: List<Class<Any>>, implementedInterfaces: List<Class<*>>) {
+        val clients = rpcServices.filter { !implementedInterfaces.contains(it) }.also {
+            it.forEach { logger.debug("RpcService client detected [$it]") }
+        }
+        rpcClients.addAll(clients)
+    }
+
+    private fun findRpcImplementations(rpcServices: List<Class<Any>>, implementedInterfaces: List<Class<*>>) {
+        val implementations = rpcServices.filter { implementedInterfaces.contains(it) }.also {
+            it.forEach { logger.debug("RpcService implementation detected [$it]") }
+        }
+        rpcImplementations.addAll(implementations)
     }
 }

@@ -17,7 +17,7 @@ open class RpcConfiguration() : BeanDefinitionRegistryPostProcessor {
     }
 
     override fun postProcessBeanDefinitionRegistry(registry: BeanDefinitionRegistry) {
-        val rpcClients = RpcServicesScanner().findClients()
+        val rpcClients = RpcServicesScanner.getInstance().getRpcClients()
         rpcClients.forEach { registerRpcClientAsBean(it, registry) }
     }
 

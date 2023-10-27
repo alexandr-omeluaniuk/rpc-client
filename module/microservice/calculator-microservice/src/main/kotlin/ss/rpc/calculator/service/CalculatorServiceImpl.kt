@@ -12,4 +12,12 @@ class CalculatorServiceImpl() : CalculatorService {
     override fun multiplication(a: Int, b: Int): Int {
         return a * b
     }
+
+    override fun pi(): Double {
+        return 3.14
+    }
+
+    override fun printNumber(num: Int) {
+        println("PRINT NUMBER: " + num)
+    }
 }

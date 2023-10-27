@@ -17,4 +17,11 @@ class ApiController(
     ): Int {
         return calculatorService.sum(a, b)
     }
+
+    @GetMapping("/calc/print/{a}")
+    fun printNumber(
+        @PathVariable("a") a: Int,
+    ) {
+        calculatorService.printNumber(a)
+    }
 }

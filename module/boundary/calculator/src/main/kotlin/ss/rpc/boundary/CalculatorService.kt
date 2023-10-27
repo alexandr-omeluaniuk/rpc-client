@@ -8,4 +8,8 @@ interface CalculatorService {
     fun sum(a: Int, b: Int): Int
 
     fun multiplication(a: Int, b: Int): Int
+
+    fun pi(): Double
+
+    fun printNumber(num: Int)
 }

@@ -9,14 +9,18 @@ import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.EventListener
 import ss.rpc.core.RpcCallSignature
 import ss.rpc.core.RpcService
-import ss.rpc.discovery.core.*
+import ss.rpc.core.state.RoutingTable
+import ss.rpc.core.state.RpcRoute
+import ss.rpc.discovery.core.DISCOVERY_SERVER_HOST
+import ss.rpc.discovery.core.DISCOVERY_SERVER_PORT
+import ss.rpc.discovery.core.DISCOVERY_SERVER_SCHEMA
+import ss.rpc.discovery.core.RpcRegistrationInfo
 import java.net.ConnectException
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodyHandlers
 import java.time.Duration
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
@@ -32,8 +36,6 @@ open class RpcDiscoveryBootstrap(
         .version(HttpClient.Version.HTTP_2)
         .connectTimeout(Duration.ofSeconds(10))
         .build()
-
-    private val routingTable: MutableMap<String, RpcRoute> = ConcurrentHashMap()
 
     @EventListener(ContextRefreshedEvent::class)
     fun onAppStartup() {
@@ -95,8 +97,7 @@ open class RpcDiscoveryBootstrap(
                 BodyHandlers.ofString()
             ).body()
             val listRoutes: List<RpcRoute> = objectMapper.readValue<List<RpcRoute>>(routingTableString)
-            routingTable.clear()
-            routingTable.putAll(listRoutes.associateBy(RpcRoute::rpcCallName))
+            RoutingTable.getInstance().update(listRoutes)
         } catch (e: ConnectException) {
 
         }

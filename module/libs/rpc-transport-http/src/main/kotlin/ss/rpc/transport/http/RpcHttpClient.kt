@@ -2,6 +2,7 @@ package ss.rpc.transport.http
 
 import org.slf4j.LoggerFactory
 import ss.rpc.core.api.RpcClientProxy
+import ss.rpc.core.state.RoutingTable
 import java.lang.reflect.Method
 
 class RpcHttpClient : RpcClientProxy {
@@ -12,6 +13,8 @@ class RpcHttpClient : RpcClientProxy {
         logger.debug("Call RPC:$method")
         logger.debug("Arguments: ")
         args?.forEach { logger.debug(it.toString()) }
+        val route = RoutingTable.getInstance().getRoute(method.toString())
+        logger.debug(route.toString())
         return 0
     }
 }

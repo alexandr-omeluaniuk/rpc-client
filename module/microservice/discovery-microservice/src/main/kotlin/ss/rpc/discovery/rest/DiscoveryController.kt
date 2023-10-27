@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import ss.rpc.core.state.RpcRoute
 import ss.rpc.discovery.core.RpcRegistrationInfo
-import ss.rpc.discovery.core.RpcRoute
 import ss.rpc.discovery.service.DiscoveryService
 
 @RestController

@@ -2,3 +2,6 @@ spring:
   application.name: calculator.microservice
 server:
   port: 7000
+logging:
+  level:
+    ss.rpc: DEBUG

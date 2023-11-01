@@ -1,12 +1,14 @@
 package ss.rpc.transport.http
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.slf4j.LoggerFactory
 import ss.rpc.core.RpcCallSignature
 import ss.rpc.core.api.RpcClientProxy
 import ss.rpc.core.state.RoutingTable
 import ss.rpc.core.state.RpcRoute
 import ss.rpc.transport.http.model.RpcCall
+import ss.rpc.transport.http.model.RpcResponse
 import java.lang.reflect.Method
 import java.net.URI
 import java.net.http.HttpClient
@@ -16,7 +18,7 @@ import java.time.Duration
 
 class RpcHttpClient : RpcClientProxy {
 
-    override fun invoke(proxy: Any?, method: Method?, args: Array<out Any>?): Any {
+    override fun invoke(proxy: Any?, method: Method?, args: Array<out Any>?): Any? {
         logger.debug("Call RPC [$method]")
         logger.debug("Arguments: ")
         args?.forEach { logger.debug(it.toString()) }
@@ -29,11 +31,12 @@ class RpcHttpClient : RpcClientProxy {
         val payload = serializeArguments(route.rpcCallName, args)
         logger.debug("Request payload [$payload]")
         val response = sendRequest(payload, route)
+        val deserializedResponse = objectMapper.readValue<RpcResponse>(response)
         logger.debug("Response [$response]")
-        return 0
+        return deserializedResponse.result
     }
 
-    private fun sendRequest(payload: String?, route: RpcRoute): String? {
+    private fun sendRequest(payload: String?, route: RpcRoute): String {
         val uri = URI("http://${route.host}:${route.port}$RPC_ENDPOINT")
         return httpClient.send(
             HttpRequest.newBuilder().uri(

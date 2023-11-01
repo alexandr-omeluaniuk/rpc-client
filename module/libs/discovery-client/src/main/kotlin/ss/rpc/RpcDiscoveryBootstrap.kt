@@ -10,6 +10,7 @@ import org.springframework.context.event.EventListener
 import ss.rpc.core.RpcCallSignature
 import ss.rpc.core.RpcService
 import ss.rpc.core.state.RoutingTable
+import ss.rpc.core.state.RpcImplementationRegistry
 import ss.rpc.core.state.RpcRoute
 import ss.rpc.discovery.core.DISCOVERY_SERVER_HOST
 import ss.rpc.discovery.core.DISCOVERY_SERVER_PORT
@@ -40,6 +41,7 @@ open class RpcDiscoveryBootstrap(
     @EventListener(ContextRefreshedEvent::class)
     fun onAppStartup() {
         val rpcImplementations = findRpcImplementations()
+        RpcImplementationRegistry.getInstance().register(rpcImplementations)
         val rpcCallSignatures = prepareRpcCallSignatures(rpcImplementations)
         discoverRpcCallsPeriodically(rpcCallSignatures)
     }

@@ -1,5 +1,6 @@
 package ss.rpc.transport.http
 
+import io.swagger.v3.oas.annotations.Hidden
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ss.rpc.transport.http.model.RpcCall
 
+@Hidden
 @RestController
 @RequestMapping(RPC_ENDPOINT)
 class RpcHttpServer {

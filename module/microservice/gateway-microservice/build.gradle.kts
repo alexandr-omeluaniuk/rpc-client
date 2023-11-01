@@ -24,6 +24,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation(project(":module:boundary:calculator"))
     implementation(project(":module:libs:discovery-client"))
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0")
 }
 
 tasks.withType<KotlinCompile> {
